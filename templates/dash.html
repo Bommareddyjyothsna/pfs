@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+        .navbar {
+            overflow: hidden;
+            background-color: #333;
+        }
+        .navbar a, .navbar input[type="text"], .navbar button {
+            float: left;
+            display: block;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 14px 100px;
+            text-decoration: none;
+        }
+        .navbar input[type="text"] {
+            border: none;
+            width: 100px;
+            
+        }
+        .navbar button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            
+            
+        }
+        .navbar a:hover, .navbar button:hover, .dropdown:hover .dropbtn {
+            background-color: #575757;
+        }
+        .navbar .dropdown {
+            float: left;
+            overflow: hidden;
+        }
+        .navbar .dropdown .dropbtn {
+            font-size: 16px;
+            border: none;
+            outline: none;
+            color: white;
+            padding: 14px 100px;
+            background-color: inherit;
+            font-family: inherit;
+            margin: 0;
+        }
+        .navbar .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #333;
+            min-width: 160px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+        .navbar .dropdown-content a {
+            float: none;
+            color: #f2f2f2;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: left;
+        }
+        .navbar .dropdown-content a:hover {
+            background-color: #575757;
+        }
+        .navbar .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        .container {
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+    </style>
+</head>
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    {% for message in messages %}
+      <center><h3>{{ message }}</h3></center>
+    {% endfor %}
+   {% endif %}
+{% endwith %}
+<body>
+    {{session.get('user')}}
+    <div class="navbar">
+        <a href="#home">Home</a>
+        <div class="dropdown">
+            <button class="dropbtn">Notes 
+                <i class="fa fa-caret-down"></i>
+            </button>
+            <div class="dropdown-content">
+                <a href="{{url_for('addnotes')}}">Add Notes</a>
+                <a href="{{url_for('viewallnotes')}}">View All Notes</a>
+                <a href="{{url_for('getexceldata')}}">Generate Excel Sheet</a>
+            </div>
+        </div> 
+        <div class="dropdown">
+            <button class="dropbtn">Files 
+                <i class="fa fa-caret-down"></i>
+            </button>
+            <div class="dropdown-content">
+                <a href="{{url_for('uploadfile')}}">Upload</a>
+                <a href="{{url_for('viewallfiles')}}">View All Files</a>
+            </div>
+        </div>
+        <form  action="{{url_for('search')}}" method="POST">
+        <input type="text"  name="sname" placeholder="Search..">
+        <button>Search</button>
+    </form>
+        <a href="{{url_for('logout')}}">Logout</a>
+    </div>
+
+    <div class="container">
+        <h1>Welcome to Simple Notes App</h1>
+        <!-- Content goes here -->
+    </div>
+</body>
+{% if sdata %}
+<table>
+            
+    <tr>
+        <th>n_id</th>
+        <th>Title</th>
+        <th>created_at</th>
+        <th>Actions</th>
+    </tr>
+    <!-- Example rows -->
+     {% for i in sdata %}
+    <tr>
+        <td>{{i[0]}}</td>
+        <td>{{i[1]}}</td>
+        <td>{{i[3]}}</td>
+
+        <td><a href="{{url_for('viewnotes',nid=i[0])}}" class="button">View</a></td>
+        <td>
+            <a href="{{url_for('updatenotes',nid=i[0])}}" class="button update">Update</a>
+            <a href="{{url_for('deletenotes',nid=i[0])}}" class="button delete">Delete</a>
+        </td>
+    </tr>
+    {% endfor %}
+    <!-- Add more rows as needed -->
+</table>
+{% endif %}
+</html>
+
+
